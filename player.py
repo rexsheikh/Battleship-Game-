@@ -8,6 +8,7 @@ from board import Board
 class Player():
     def __init__(self):
         self.board = Board()
+        self.attack_board = Board()
         self.destroyer = Destroyer(2,'destroyer')
         self.submarine = Submarine(3,'submarine')
         self.battleship = Battleship(4,'battleship alpha')
@@ -23,36 +24,35 @@ class Player():
 
     def place_craft(self):
         for craft in self.fleet:
-            self.user_input= str(input(f"Enter start/end coordinates to place {craft.name} with length {craft.length}: "))
-            self.coords = list(self.parse_input(self.user_input))
-            self.length_check = self.check_length(self.coords,craft)
-            self.orientation_check = self.check_orientation(self.coords)
-            self.overlap_check = self.check_overlap(self.coords,self.orientation_check)
-            if self.length_check and (self.orientation_check == 'vertical' or self.orientation_check == 'horizontal') and self.overlap_check:
-                if self.orientation_check == 'horizontal': 
-                    while self.coords[3] >= (self.coords[1] + 2):
-                        self.board.board[self.coords[0]][self.coords[1]] = "&"
-                        self.board.board[self.coords[2]][self.coords[3]] = "&"
-                        self.coords[3] -= 2
-                    self.board.display_board()
-                elif self.orientation_check == 'vertical': 
-                    while self.coords[2] >= self.coords[0]:
-                        self.board.board[self.coords[0]][self.coords[1]] = "&"
-                        self.board.board[self.coords[2]][self.coords[3]] = "&"
-                        self.coords[2] -= 1 
-                    self.board.display_board()
-            else:
-                # while self.length_check or (self.check_orientation == 'vertical' or self.check_orientation == 'horizontal') or self.overlap_check:
-                #     self.place_craft(craft)
-                pass
-            
+            while True:
+                self.user_input= str(input(f"Enter start/end coordinates to place {craft.name} with length {craft.length}: "))
+                self.x1,self.x2,self.x2,self.y2 = list(self.parse_input(self.user_input))
+                self.coords = [self.x1,self.y1,self.x2,self.y2]
+                self.length_check = self.check_length(self.x1,self.y1,self.x2,self.y2,craft)
+                self.orientation_check = self.check_orientation(self.x1,self.y1,self.x2,self.y2)
+                self.overlap_check = self.check_overlap(self.x1,self.y1,self.x2,self.y2,self.orientation_check)
+                if self.length_check == True and (self.orientation_check  == 'horizontal' or 'vertical') and self.overlap_check == True:
+                    break 
+            if self.orientation_check == 'horizontal': 
+                while self.y2 >= (self.y1 + 2):
+                    self.board.board[self.x1][self.y1] = u'\u25D8'
+                    self.board.board[self.x2][self.y2] = u'\u25D8'
+                    craft.coords.extend(self.coords)
+                    self.y2 -= 2
+                self.board.display_board()
+            elif self.orientation_check == 'vertical': 
+                while self.x2 >= self.x1:
+                    self.board.board[self.x1][self.y1] = u'\u25D8'
+                    self.board.board[self.x2][self.y2] = u'\u25D8'
+                    craft.coords.extend(self.coords)
+                    self.x2 -= 1 
+                self.board.display_board()
 
-
-    def check_length(self,coords,craft):
-        if coords[0] == coords[2] and coords[3]/coords[1] != craft.length:  
+    def check_length(self,x1,y1,x2,y2,craft):
+        if x1 == x2 and y2/y1 != craft.length:  
             print('please enter coordinates of the correct length')
             return False 
-        elif coords[1] == coords[3] and (coords[0] + coords[2] + 1) != craft.length:
+        elif y1 == y2 and (x1 + x2+ 1) != craft.length:
             print('please enter coordinates of the correct length')
             return False
         else:
@@ -60,22 +60,21 @@ class Player():
             
 
 
-    def check_overlap(self,coords,orientation):
-        self.overlap_coords = coords.copy()
+    def check_overlap(self,x1,y1,x2,y2,orientation):
+        self.ox1,self.oy1,self.ox2,self.oy2 = x1,y1,x2,y2
         if orientation == "horizontal":
-            while self.overlap_coords[2] >= self.overlap_coords[0]:
-                if self.board.board[self.overlap_coords[0]][self.overlap_coords[2]] == "&":
+            while self.oy2 >= (self.oy1):
+                if self.board.board[self.ox1][self.oy1] == "&":
                     print('overlap')
                     return False
-                self.overlap_coords[2] -= 2
+                self.oy2 -= 2
         else:
-            while self.overlap_coords[3] >= self.overlap_coords[1]:
-                if self.board.board[self.overlap_coords[3]][self.overlap_coords[1]] == "&":
+            while self.ox2 >= self.ox1:
+                if self.board.board[self.ox1][self.oy1] == "&":
                     print('overlap')
                     return False
-                self.overlap_coords[3] -= 1
+                self.ox2 -= 1
         return True
-
 
     def parse_input(self,user_input):
         self.x1 = self.board_map[user_input[0]] 
@@ -92,10 +91,10 @@ class Player():
             self.y2 = self.temp
         return self.x1, self.y1, self.x2, self.y2
 
-    def check_orientation(self,coords):
-        if coords[0] == coords[2]:
+    def check_orientation(self,x1,y1,x2,y2,):
+        if x1 == x2:
             return 'horizontal'
-        elif coords[1] == coords[3]:
+        elif y1 == y2:
             return 'vertical'
         else:
             print('please place craft either horizontally or vertically')

@@ -12,9 +12,8 @@
     #. attack function for each player. 
     #. hit miss information to update individual player boards inside game logic 
     #. print overall craft destroyed for each player 
-
-
 from player import Player
+import time 
 
 class Game():
     def __init__(self):
@@ -30,6 +29,18 @@ class Game():
 
     def overlap_check(self):
         pass 
+
+    def welcome_message(self):
+        print("*********** WELCOME TO BATTLESHIP ***********")
+        time.sleep(0.75)
+        print("INSTRUCTIONS: enter coordinates according to the board map separated by a slash")
+        time.sleep(0.5)
+        print("Example: aA/aB for destroyer (length 2) \n bA/bC for submarine (length 3) and so on")
+        time.sleep(0.5)
+        print("Elements in the fleet cannot overlap and they cannot be placed diagonally")
+        time.sleep(0.5)
+        print("you will see your board in detail but will only see hits and misses for your opponent's board.")
+
 
 
 

@@ -11,4 +11,15 @@
 
 from random import sample
 
-print(6%4)
+# U+22Ax
+test = u'\u25D8' #ship 
+test2 = u'\u2612' #hit 
+
+test = [1,2,3,4]
+sample = []
+
+sample.extend(test)
+print(sample)
+
+
+
