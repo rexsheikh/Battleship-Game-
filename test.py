@@ -11,8 +11,4 @@
 
 from random import sample
 
-
-sample_input = 'aA/aB'
-print(ord(sample_input[0]-97))
-
-#
+print(6%4)

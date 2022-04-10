@@ -3,7 +3,7 @@ class Board:
         self.dot = u'\u25CC'
         self.container = []
         self.key_list = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']
-        self.generate_board()
+        self.board = self.generate_board()
 
     def generate_board(self):
         for i in range(20):

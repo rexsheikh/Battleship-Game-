@@ -11,7 +11,14 @@ from player import Player
 # test.display_board()
 
 player = Player()
-# player.place_craft()
+
 player.board.display_board()
+player.place_craft()
+
+
+
+
+
+
 
 
