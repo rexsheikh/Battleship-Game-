@@ -23,6 +23,7 @@ class Board:
         print(('  ')+ (' ').join(self.key_list).upper())
         for k in self.container:
             print(''.join(k))
+    
 
 
 

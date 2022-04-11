@@ -1,11 +1,10 @@
 from board import Board
 from player import Player
+from game import Game
 
-player = Player()
+game = Game()
 
-player.board.display_board()
-player.place_craft()
-
+game.run_game()
 
 
 

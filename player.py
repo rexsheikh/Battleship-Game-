@@ -7,14 +7,14 @@ from board import Board
 
 class Player():
     def __init__(self):
-        self.board = Board()
+        self.game_board = Board()
         self.attack_board = Board()
-        self.destroyer = Destroyer(2,'destroyer')
-        self.submarine = Submarine(3,'submarine')
-        self.battleship = Battleship(4,'battleship alpha')
-        self.battleship2 = Battleship(4,'battleship bravo')
-        self.aircraft_carrier = Aircraft_carrier(5,'aircraft_carrier')
-        self.fleet = [self.destroyer,self.submarine,self.battleship,self.battleship2,self.aircraft_carrier] 
+        self.destroyer = Destroyer(2,'destroyer',2)
+        self.submarine = Submarine(3,'submarine',3)
+        self.battleship = Battleship(4,'battleship alpha',4)
+        self.battleship2 = Battleship(4,'battleship bravo',4)
+        self.aircraft_carrier = Aircraft_carrier(5,'aircraft_carrier',5)
+        self.fleet = [self.destroyer] #,self.submarine,self.battleship,self.battleship2,self.aircraft_carrier] 
         self.board_map = {
             'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7,'i':8,'j':9,'k':10,'l':11,'m':12,
             'n':13,'o':14,'p':15,'q':16,'r':17, 's':18,'t':19,
@@ -35,16 +35,17 @@ class Player():
                     break 
             if self.orientation_check == 'horizontal': 
                 while self.y2 >= (self.y1 + 2):
-                    self.board.board[self.x1][self.y1] = u'\u25D8'
-                    self.board.board[self.x2][self.y2] = u'\u25D8'
+                    self.game_board.board[self.x1][self.y1] = u'\u25D8'
+                    self.game_board.board[self.x2][self.y2] = u'\u25D8'
                     craft.coords.extend(self.coords)
                     self.y2 -= 2
-                self.board.display_board()
+                self.game_board.display_board()
             elif self.orientation_check == 'vertical': 
                 while self.x2 >= self.x1:
-                    self.board.board[self.x1][self.y1] = u'\u25D8'
-                    self.board.board[self.x2][self.y2] = u'\u25D8'
+                    self.game_board.board[self.x1][self.y1] = u'\u25D8'
+                    self.game_board.board[self.x2][self.y2] = u'\u25D8'
                     craft.coords.extend(self.coords)
+                    self.craft_map[craft.name] = craft.coords
                     self.x2 -= 1 
                 self.board.display_board()
 
@@ -64,13 +65,13 @@ class Player():
         self.ox1,self.oy1,self.ox2,self.oy2 = x1,y1,x2,y2
         if orientation == "horizontal":
             while self.oy2 >= (self.oy1):
-                if self.board.board[self.ox1][self.oy1] == "&":
+                if self.game_board.board[self.ox1][self.oy1] == u'\u25D8':
                     print('overlap')
                     return False
                 self.oy2 -= 2
         else:
             while self.ox2 >= self.ox1:
-                if self.board.board[self.ox1][self.oy1] == "&":
+                if self.game_board.board[self.ox1][self.oy1] == u'\u25D8':
                     print('overlap')
                     return False
                 self.ox2 -= 1
@@ -99,6 +100,40 @@ class Player():
         else:
             print('please place craft either horizontally or vertically')
             return False
+
+    def attack(self,opponent_board,oppenent_fleet):
+        self.user_input = input("Enter x and y coordinates to attack: ")
+        self.x_attack = self.board_map[self.user_input[0]]
+        self.y_attack = self.board_map[self.user_input[1]]
+        if opponent_board[self.x_attack][self.y_attack] == u'\u25D8':
+            print('***** HIT *****')
+            self.attack_board.board[self.x_attack][self.y_attack] == 'X'
+            self.attack_board.display_board()
+            opponent_board[self.x_attack][self.y_attack] = 'X' 
+            for craft in oppenent_fleet:
+                self.string_coords = craft.coords.copy()
+                ''.join(self.string_coords)
+                for i in range(0,len(self.string_coords),2):
+                    if self.x_attack in self.string_coords and self.y_attack == i + 1:
+                        craft.decrement_health
+                        if craft.health == 0:
+                            print(f"You sunk the oppenent's {craft.name}!!")
+        else:
+            print('***** MISS *****')
+            self.attack_board[self.x_attack][self.y_attack] == 'O'
+            self.attack_board.display_board()
+
+    def display_fleet_health(self,fleet):
+        for craft in fleet:
+            print(f"{craft.name} Health: {craft.health}\n")
+
+    def fleet_health(self,fleet):
+        self.total_health = 0
+        for craft in self.fleet:
+            self.total_health += craft.health
+        return self.total_health
+
+
 
     
     
