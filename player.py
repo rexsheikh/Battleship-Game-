@@ -4,11 +4,13 @@ from submarine import Submarine
 from battleship import Battleship
 from aircraft_carrier import Aircraft_carrier
 from board import Board
+import time
 
 class Player():
-    def __init__(self):
-        self.game_board = Board()
-        self.attack_board = Board()
+    def __init__(self,name):
+        self.name = name
+        self.game_board = Board("GAME BOARD")
+        self.attack_board = Board("ATTACK BOARD")
         self.destroyer = Destroyer(2,'destroyer',2)
         self.submarine = Submarine(3,'submarine',3)
         self.battleship = Battleship(4,'battleship alpha',4)
@@ -23,9 +25,11 @@ class Player():
         }
 
     def place_craft(self):
+        self.game_board.display_board()
         for craft in self.fleet:
             while True:
-                self.user_input= str(input(f"Enter start/end coordinates to place {craft.name} with length {craft.length}: "))
+                self.user_input= str(input(f"{self.name}, place your craft!\nEnter start/end coordinates to place {craft.name} with length {craft.length}: "))
+                print('\n')
                 self.x1,self.x2,self.x2,self.y2 = list(self.parse_input(self.user_input))
                 self.coords = [self.x1,self.y1,self.x2,self.y2]
                 self.length_check = self.check_length(self.x1,self.y1,self.x2,self.y2,craft)
@@ -40,6 +44,7 @@ class Player():
                     craft.coords.extend(self.coords)
                     self.y2 -= 2
                 self.game_board.display_board()
+                print("\n")
             elif self.orientation_check == 'vertical': 
                 while self.x2 >= self.x1:
                     self.game_board.board[self.x1][self.y1] = u'\u25D8'
@@ -47,7 +52,8 @@ class Player():
                     craft.coords.extend(self.coords)
                     self.craft_map[craft.name] = craft.coords
                     self.x2 -= 1 
-                self.board.display_board()
+                self.game_board.display_board()
+                print("\n")
 
     def check_length(self,x1,y1,x2,y2,craft):
         if x1 == x2 and y2/y1 != craft.length:  
@@ -101,37 +107,37 @@ class Player():
             print('please place craft either horizontally or vertically')
             return False
 
-    def attack(self,opponent_board,oppenent_fleet):
-        self.user_input = input("Enter x and y coordinates to attack: ")
+    def attack(self,opponent_board,opponent_fleet):
+        self.user_input = input(f"{self.name}, Enter x and y coordinates to attack: ")
         self.x_attack = self.board_map[self.user_input[0]]
         self.y_attack = self.board_map[self.user_input[1]]
+        print("ORDNANCE ON THE WAY...")
         if opponent_board[self.x_attack][self.y_attack] == u'\u25D8':
-            print('***** HIT *****')
-            self.attack_board.board[self.x_attack][self.y_attack] == 'X'
-            self.attack_board.display_board()
+            print('*************\n     HIT     \n*************')
+            self.attack_board.board[self.x_attack][self.y_attack] = 'X'
             opponent_board[self.x_attack][self.y_attack] = 'X' 
-            for craft in oppenent_fleet:
-                self.string_coords = craft.coords.copy()
-                ''.join(self.string_coords)
-                for i in range(0,len(self.string_coords),2):
-                    if self.x_attack in self.string_coords and self.y_attack == i + 1:
-                        craft.decrement_health
-                        if craft.health == 0:
-                            print(f"You sunk the oppenent's {craft.name}!!")
+            for craft in opponent_fleet:
+                for i in range(0,len(craft.coords),2):
+                    if self.x_attack in craft.coords and self.y_attack == craft.coords[i+1]:
+                        craft.decrement_health()
+
         else:
             print('***** MISS *****')
-            self.attack_board[self.x_attack][self.y_attack] == 'O'
+            self.attack_board.board[self.x_attack][self.y_attack] == '0'
             self.attack_board.display_board()
-
-    def display_fleet_health(self,fleet):
-        for craft in fleet:
-            print(f"{craft.name} Health: {craft.health}\n")
 
     def fleet_health(self,fleet):
         self.total_health = 0
         for craft in self.fleet:
             self.total_health += craft.health
         return self.total_health
+
+    def display_fleet_health(self,fleet):
+        self.craft_health = []
+        print(f"{self.name}'s fleet health")
+        for craft in fleet:
+            self.craft_health.append(f" {craft.name} : {craft.health}/{craft.length}")
+            print(self.craft_health)
 
 
 

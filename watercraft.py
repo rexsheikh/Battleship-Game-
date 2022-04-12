@@ -6,7 +6,7 @@ class Watercraft():
         self.coords = []
 
     def decrement_health(self):
-        self.length -= 1
+        self.health -= 1
 
     def display_health(self):
         print(f"{self.name} Health : {self.length}/{self.health}")

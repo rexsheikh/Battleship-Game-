@@ -10,16 +10,16 @@
 
 
 from random import sample
-
-# U+22Ax
-test = u'\u25D8' #ship 
-test2 = u'\u2612' #hit 
-
-test = [1,2,3,4]
-sample = []
-
-sample.extend(test)
-print(sample)
+from board import Board
+from player import Player
 
 
+player = Player('player_test')
+total_health = player.fleet_health(player.fleet)
+print(total_health)
 
+
+test = [11,12,13,14]
+
+for i in range(0,len(test),2):
+    print(test(i))

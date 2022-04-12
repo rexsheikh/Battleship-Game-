@@ -1,5 +1,7 @@
+from os import system
 class Board:
-    def __init__(self):
+    def __init__(self,name):
+        self.name = name
         self.dot = u'\u25CC'
         self.container = []
         self.key_list = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']
@@ -20,10 +22,11 @@ class Board:
         self.container[x][y] = z
 
     def display_board(self):
+        print(f"{self.name}")
         print(('  ')+ (' ').join(self.key_list).upper())
         for k in self.container:
             print(''.join(k))
-    
+
 
 
 
