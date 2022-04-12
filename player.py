@@ -10,13 +10,15 @@ class Player():
     def __init__(self,name):
         self.name = name
         self.game_board = Board("GAME BOARD")
+        self.game_board.board = self.game_board.generate_board()
         self.attack_board = Board("ATTACK BOARD")
+        self.attack_board.board = self.attack_board.generate_board()
         self.destroyer = Destroyer(2,'destroyer',2)
         self.submarine = Submarine(3,'submarine',3)
         self.battleship = Battleship(4,'battleship alpha',4)
         self.battleship2 = Battleship(4,'battleship bravo',4)
         self.aircraft_carrier = Aircraft_carrier(5,'aircraft_carrier',5)
-        self.fleet = [self.destroyer] #,self.submarine,self.battleship,self.battleship2,self.aircraft_carrier] 
+        self.fleet = [self.aircraft_carrier] #self.destroyer,self.submarine,self.battleship,self.battleship2,
         self.board_map = {
             'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7,'i':8,'j':9,'k':10,'l':11,'m':12,
             'n':13,'o':14,'p':15,'q':16,'r':17, 's':18,'t':19,
@@ -50,7 +52,6 @@ class Player():
                     self.game_board.board[self.x1][self.y1] = u'\u25D8'
                     self.game_board.board[self.x2][self.y2] = u'\u25D8'
                     craft.coords.extend(self.coords)
-                    self.craft_map[craft.name] = craft.coords
                     self.x2 -= 1 
                 self.game_board.display_board()
                 print("\n")
@@ -93,7 +94,7 @@ class Player():
             self.x1 = self.x2
             self.x2 = self.temp
         if self.y1 > self.y2:
-            self.temp = self.y2
+            self.temp = self.y1
             self.y1 = self.y2
             self.y2 = self.temp
         return self.x1, self.y1, self.x2, self.y2
@@ -111,7 +112,8 @@ class Player():
         self.user_input = input(f"{self.name}, Enter x and y coordinates to attack: ")
         self.x_attack = self.board_map[self.user_input[0]]
         self.y_attack = self.board_map[self.user_input[1]]
-        print("ORDNANCE ON THE WAY...")
+        print("FIRING...")
+        time.sleep(1)
         if opponent_board[self.x_attack][self.y_attack] == u'\u25D8':
             print('*************\n     HIT     \n*************')
             self.attack_board.board[self.x_attack][self.y_attack] = 'X'
@@ -120,10 +122,9 @@ class Player():
                 for i in range(0,len(craft.coords),2):
                     if self.x_attack in craft.coords and self.y_attack == craft.coords[i+1]:
                         craft.decrement_health()
-
         else:
             print('***** MISS *****')
-            self.attack_board.board[self.x_attack][self.y_attack] == '0'
+            self.attack_board.board[self.x_attack][self.y_attack] = '0'
             self.attack_board.display_board()
 
     def fleet_health(self,fleet):

@@ -14,12 +14,7 @@ from board import Board
 from player import Player
 
 
-player = Player('player_test')
-total_health = player.fleet_health(player.fleet)
-print(total_health)
+player = Player("player1")
 
-
-test = [11,12,13,14]
-
-for i in range(0,len(test),2):
-    print(test(i))
+player.attack_board.board[0][2] = "0"
+player.attack_board.display_board()
