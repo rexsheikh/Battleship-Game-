@@ -4,12 +4,17 @@ class Watercraft():
         self.health = health
         self.name = name 
         self.coords = []
+    
 
     def decrement_health(self):
         self.health -= 1
 
     def display_health(self):
-        print(f"{self.name} Health : {self.length}/{self.health}")
+        print(f"{self.name} Health : {self.health}/{self.length}")
+
+    def stringify_coords(self,coords):
+        self.str_coords = ''.join(self.coords)
+        return self.str_coords
     
    
 

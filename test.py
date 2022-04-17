@@ -14,7 +14,11 @@ from board import Board
 from player import Player
 
 
-player = Player("player1")
 
-player.attack_board.board[0][2] = "0"
-player.attack_board.display_board()
+
+test = 'cat'
+
+
+for i in range(0,len(test)):
+    if "t" in test:
+        print('true')
